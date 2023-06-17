@@ -37,7 +37,7 @@ RUN cd / && \
 
 # Install python packages below
 RUN cd /layer/python/ && \
-pip3.10 install multipart -t .  && \
+pip3.10 install python-multipart -t .  && \
 pip3.10 install jwt -t . && \
 pip3.10 install cffi && \
 pip3.10 install dynamodb_json
