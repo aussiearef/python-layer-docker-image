@@ -39,9 +39,9 @@ RUN cd / && \
 RUN cd /layer/python/ && \
 pip3.10 install python-multipart -t .  && \
 pip3.10 install PyJWT -t . && \
-pip3.10 install cffi && \
-pip3.10 install dynamodb_json &&\
-pip3.10 install cryptography
+pip3.10 install cffi -t . && \
+pip3.10 install dynamodb_json -t . &&\
+pip3.10 install cryptography -t .
 
 # End installing python packages below
 
