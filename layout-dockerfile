@@ -41,7 +41,8 @@ pip3.10 install python-multipart -t .  && \
 pip3.10 install PyJWT -t . && \
 pip3.10 install cffi -t . && \
 pip3.10 install dynamodb_json -t . &&\
-pip3.10 install cryptography -t .
+pip3.10 install cryptography -t . && \ 
+pip3.10 install elasticsearch -t .
 
 # End installing python packages below
 
