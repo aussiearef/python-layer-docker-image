@@ -11,6 +11,9 @@
 #   cp layer.zip /download/
 
 
+# Define a build-time variable for the Python version
+ARG pythonVersion=3.12.0
+
 FROM amazonlinux:2
 WORKDIR /App
 
@@ -18,14 +21,15 @@ RUN yum update -y
 
 RUN yum groupinstall "Development Tools" -y
 RUN yum erase openssl-devel -y
-RUN yum install openssl11 openssl11-devel  libffi-devel bzip2-devel wget -y
+RUN yum install openssl11 openssl11-devel libffi-devel bzip2-devel wget -y
 
 RUN yum install wget -y
 RUN yum install zip -y
 
-RUN wget https://www.python.org/ftp/python/3.12.0/Python-3.12.0.tgz
-RUN tar -xf Python-3.12.0.tgz
-RUN cd Python-3.12.0 && \
+# Use the variable for the Python version in the URL
+RUN wget https://www.python.org/ftp/python/${pythonVersion}/Python-${pythonVersion}.tgz
+RUN tar -xf Python-${pythonVersion}.tgz
+RUN cd Python-${pythonVersion} && \
     bash ./configure --enable-optimizations && \
     make -j $(nproc) && \
     make altinstall 
