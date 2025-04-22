@@ -1,6 +1,10 @@
+#
+# To build your layer.zip file for AWS Lambda, run the following commands:
+#
+
 # docker build -f layout-dockerfile -t layer .  
 # docker images 
-# docker run  -it --rm -v <absolute host path>:/download bf8b1b653d3b
+# docker run  -it --rm -v <absolute host path>:/download <image ID> (example: docker run  -it --rm -v /Users/aref/Downloads:/download 4c32df90a1d5)
 # in the container:
 #   cd /
 #   cd layer/
@@ -19,14 +23,14 @@ RUN yum install openssl11 openssl11-devel  libffi-devel bzip2-devel wget -y
 RUN yum install wget -y
 RUN yum install zip -y
 
-RUN wget https://www.python.org/ftp/python/3.10.4/Python-3.10.4.tgz
-RUN tar -xf Python-3.10.4.tgz
-RUN cd Python-3.10.4 && \
+RUN wget https://www.python.org/ftp/python/3.12.0/Python-3.12.0.tgz
+RUN tar -xf Python-3.12.0.tgz
+RUN cd Python-3.12.0 && \
     bash ./configure --enable-optimizations && \
     make -j $(nproc) && \
     make altinstall 
 
-RUN python3.10 --version
+RUN python --version
 
 RUN yum install python3-pip -y
 
@@ -37,12 +41,12 @@ RUN cd / && \
 
 # Install python packages below
 RUN cd /layer/python/ && \
-pip3.10 install python-multipart -t .  && \
-pip3.10 install PyJWT -t . && \
-pip3.10 install cffi -t . && \
-pip3.10 install dynamodb_json -t . &&\
-pip3.10 install cryptography -t . && \ 
-pip3.10 install elasticsearch -t .
+pip3 install python-multipart -t .  && \
+pip3 install PyJWT -t . && \
+pip3 install cffi -t . && \
+pip3 install dynamodb_json -t . &&\
+pip3 install cryptography -t . && \ 
+pip3 install elasticsearch -t .
 
 # End installing python packages below
 
