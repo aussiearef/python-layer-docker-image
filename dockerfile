@@ -2,7 +2,7 @@
 # To build your layer.zip file for AWS Lambda, run the following commands:
 #
 
-# docker build -f layout-dockerfile -t layer .  
+# docker build -f dockerfile -t layer .  
 # docker images 
 # docker run  -it --rm -v <absolute host path>:/download <image ID> (example: docker run  -it --rm -v /Users/aref/Downloads:/download 4c32df90a1d5)
 # in the container:
