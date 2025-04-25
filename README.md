@@ -14,15 +14,15 @@ If you need a Layer.zip file with Python 3.11 or Python 3.10 etc, you must use t
 - Open Terminal
 - Go to where "dockerfile" file is located. 
 - Run these commands:
-  - docker build -f dockerfile -t layer .
-  - docker images
+  - ``docker build -f dockerfile -t layer .``
+  - ``docker images``
 - Find the Image ID of a docker image that is called "layer". Copy it somewhere. In below command you must replace <Image ID> with the image ID of the "layer" image.
-- Run this command: docker run  -it --rm -v <absolute host path>:/download "ID of docker image" (example: docker run  -it --rm -v /Users/aref/Downloads:/download 4c32df90a1d5)
+- Run this command: ``docker run  -it --rm -v <absolute host path>:/download <Docker Image ID>`` (example: ``docker run  -it --rm -v /Users/aref/Downloads:/download 4c32df90a1d5``)
   - In the above docker command, make sure your current user has write access to the host path e.g. /Users/aref/Downloads.
 - When the shell of the docker container appears, run these commands:
-  - cd /
-  - cd layer/
-  - cp layer.zip /download/
+  - ``cd /``
+  - ``cd layer/``
+  - ``cp layer.zip /download/``
 - Now, navigate to the host directory you used above (e.g., /Users/aref/Downloads) and find the layer.zip file there.
 - Type "exit" to exit the container.
 
