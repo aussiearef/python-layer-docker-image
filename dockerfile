@@ -1,60 +1,47 @@
-#
-# To build your layer.zip file for AWS Lambda, run the following commands:
-#
-
-# docker build -f dockerfile -t layer .  
-# docker images 
-# docker run  -it --rm -v <absolute host path>:/download <image ID> (example: docker run  -it --rm -v /Users/aref/Downloads:/download 4c32df90a1d5)
-# in the container:
-#   cd /
-#   cd layer/
-#   cp layer.zip /download/
-
-
-# Define a build-time variable for the Python version
-ARG pythonVersion=3.12.0
+# Define a build-time variable for the Python version with a default value
+ARG pythonVersion=3.10.0
 
 FROM amazonlinux:2
+
+# Re-declare the build argument to ensure it's available in this stage
+ARG pythonVersion
+
 WORKDIR /App
 
-RUN yum update -y
+# Debug: Print the pythonVersion to verify it's set
+RUN echo "Building with Python version: ${pythonVersion}"
 
-RUN yum groupinstall "Development Tools" -y
-RUN yum erase openssl-devel -y
-RUN yum install openssl11 openssl11-devel libffi-devel bzip2-devel wget -y
+RUN yum update -y && \
+    yum groupinstall "Development Tools" -y && \
+    yum erase openssl-devel -y && \
+    yum install openssl11 openssl11-devel libffi-devel bzip2-devel wget zip python3-pip -y
 
-RUN yum install wget -y
-RUN yum install zip -y
-
-# Use the variable for the Python version in the URL
-RUN wget https://www.python.org/ftp/python/${pythonVersion}/Python-${pythonVersion}.tgz
-RUN tar -xf Python-${pythonVersion}.tgz
-RUN cd Python-${pythonVersion} && \
-    bash ./configure --enable-optimizations && \
+# Use the pythonVersion variable in the wget command
+RUN wget "https://www.python.org/ftp/python/${pythonVersion}/Python-${pythonVersion}.tgz" && \
+    tar -xf Python-${pythonVersion}.tgz && \
+    cd Python-${pythonVersion} && \
+    ./configure --enable-optimizations && \
     make -j $(nproc) && \
-    make altinstall 
+    make altinstall
 
-RUN python --version
+# Verify the installed Python version
+RUN python${pythonVersion%.*} --version
 
-RUN yum install python3-pip -y
+# Create layer directory structure
+RUN mkdir -p /layer/python
 
-RUN cd / && \
-    mkdir layer && \
-    cd layer && \
-    mkdir python
+# Install Python packages
+RUN cd /layer/python && \
+    pip3 install python-multipart -t . && \
+    pip3 install PyJWT -t . && \
+    pip3 install cffi -t . && \
+    pip3 install dynamodb_json -t . && \
+    pip3 install cryptography -t . && \
+    pip3 install elasticsearch -t .
 
-# Install python packages below
-RUN cd /layer/python/ && \
-pip3 install python-multipart -t .  && \
-pip3 install PyJWT -t . && \
-pip3 install cffi -t . && \
-pip3 install dynamodb_json -t . &&\
-pip3 install cryptography -t . && \ 
-pip3 install elasticsearch -t .
-
-# End installing python packages below
-
-RUN cd /layer/ && \
+# Create the layer zip
+RUN cd /layer && \
     zip -r layer.zip .
 
-RUN cd /
+# Set the working directory to root
+WORKDIR /
